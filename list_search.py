@@ -79,11 +79,11 @@ def _get_element_or_query_by_index(lst: list, index: int) -> Any:
         return None
 
 
-def _match_query(obj: list | dict, query: dict) -> bool:
+def _match_query(object_from_list: list | dict, query: dict) -> bool:
     """
-    Check if obj matches query
+    Check if object_from_list matches query
     For example:
-    obj = {
+    object_from_list = {
         'a': {
             'b': 1
         },
@@ -94,62 +94,62 @@ def _match_query(obj: list | dict, query: dict) -> bool:
     }
     returns True
     """
-    for key, value in query.items():
+    for key, search_value in query.items():
         path = key.split(".")
-        if not _match_path(obj, path, value):
+        if not _match_path(object_from_list, path, search_value):
             return False
     return True
 
 
 def _match_path(  # noqa: PLR0911
-        obj: list | dict,
+        object_from_list: list | dict,
         path: str,
-        value: Any,
+        search_value: Any,
         operator: str | None = None,
 ) -> bool:
     """
-    Searching value in object by path
+    Searching search_value in object by path
     For example:
-    obj = {
+    object_from_list = {
         'a': {
             'b': 1
         },
         'c': 1
     }
     path = 'a.b'
-    value = 1
+    search_value = 1
     returns True
     """
     if not path:
         if operator:
             match operator:
                 case "in":
-                    match value:
+                    match search_value:
                         case str():
-                            return value in obj
+                            return search_value in object_from_list
                         case list():
-                            return all(item in obj for item in value)
+                            return all(item in search_value for item in object_from_list)
                         case _:
-                            return obj == value
+                            return object_from_list == search_value
                 case "any":
-                    match value:
+                    match search_value:
                         case str():
-                            return value in obj
+                            return search_value in object_from_list
                         case list():
-                            return any(item in obj for item in value)
+                            return any(item in search_value for item in object_from_list)
                         case _:
-                            return obj == value
+                            return object_from_list == search_value
                 case "gt":
-                    return obj > value
+                    return object_from_list > search_value
                 case "gte":
-                    return obj >= value
+                    return object_from_list >= search_value
                 case "lt":
-                    return obj < value
+                    return object_from_list < search_value
                 case "lte":
-                    return obj <= value
+                    return object_from_list <= search_value
                 case "isnull":
-                    return bool(obj) != value
-        return obj == value
+                    return bool(object_from_list) != search_value
+        return object_from_list == search_value
 
     key = path[0]
     rest = path[1:]
@@ -164,14 +164,14 @@ def _match_path(  # noqa: PLR0911
             key = key[: -len(lookup)]
             break
 
-    if isinstance(obj, dict):
-        if key in obj:
+    if isinstance(object_from_list, dict):
+        if key in object_from_list:
             # we call it recursively and pass path from the current rest
-            return _match_path(obj[key], rest, value, operator)
+            return _match_path(object_from_list[key], rest, search_value, operator)
         return False
-    elif isinstance(obj, list):
+    elif isinstance(object_from_list, list):
         # check if any item in the list matches the path
-        return _match_path(obj, path, value, operator)
+        return _match_path(object_from_list, path, search_value, operator)
     return False
 
 
