@@ -5,7 +5,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name='list_search',
-    version='0.1.4',
+    version='0.2.0',
     author='Dmitry Buslov',
     author_email='buslovdmitrij0@gmail.com',
     description='Search in list of dictionaries with lookups! Like in ORM!',

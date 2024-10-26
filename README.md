@@ -30,8 +30,18 @@ Output
 ---
 Or you can search complex objects - `list` or `dict`. If `list` - finds full match. If `dict` - finds by fields  
 The advantage of this approach is that you can put ONLY the fields **you need**, NOT the whole dict!  
-Lookups: `["__in","__any","__gt","__gte","__lt","__lte","__isnull"]`. Up to date lookups you can find
-in `SUPPORTED_FILTERING_LOOKUPS`
+Lookups: 
+```
+__in
+__contains
+__contains_elements_from_list
+__gt
+__gte
+__lt
+__lte
+__isnull
+```
+Up to date lookups you can find in `SUPPORTED_FILTERING_LOOKUPS`
 
 ```python
 from list_search import search
@@ -65,7 +75,7 @@ lst = [
 # You can put only one field, and the elements will be filtered out.
 query = {
     "author.name": "John",
-    "books__in": ["Book 2"],
+    "books__contains_elements_from_list": ["Book 2"],
     "birth_year__gte": 1945
 }
 result = search(lst, query)

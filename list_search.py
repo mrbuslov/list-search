@@ -4,7 +4,8 @@ from typing import Any
 
 SUPPORTED_FILTERING_LOOKUPS = [
     "__in",
-    "__any",
+    "__contains",
+    "__contains_elements_from_list",
     "__gt",
     "__gte",
     "__lt",
@@ -124,21 +125,15 @@ def _match_path(  # noqa: PLR0911
         if operator:
             match operator:
                 case "in":
+                    return object_from_list in search_value
+                case "contains":
+                    return search_value in object_from_list
+                case "__contains_elements_from_list":
                     match search_value:
-                        case str():
-                            return search_value in object_from_list
                         case list():
-                            return all(item in search_value for item in object_from_list)
+                            return all(item in object_from_list for item in search_value)
                         case _:
-                            return object_from_list == search_value
-                case "any":
-                    match search_value:
-                        case str():
                             return search_value in object_from_list
-                        case list():
-                            return any(item in search_value for item in object_from_list)
-                        case _:
-                            return object_from_list == search_value
                 case "gt":
                     return object_from_list > search_value
                 case "gte":
